@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conan Streaming Web</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Conan Streaming Web</h1>
+      <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 1.1rem;">Choose an episode to watch</p>
+    </header>
+    
+    <div class="video-container">
+      <div style="position: relative;" class="video-wrapper">
+        <video id="video" controls></video>
+        <div id="next-ep-overlay" class="next-overlay hidden">
+          <p>Tập tiếp theo sẽ phát sau <span id="countdown">5</span> giây</p>
+          <div>
+            <button id="cancel-next-btn" class="overlay-btn secondary">Hủy</button>
+            <button id="play-next-btn" class="overlay-btn">Phát ngay</button>
+          </div>
+        </div>
+      </div>
+      <div class="video-toolbar">
+        <div class="toolbar-left">
+          <button id="prev-btn" class="tool-btn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> Tập Trước
+          </button>
+          <button id="next-btn" class="tool-btn">
+            Tập Tiếp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+        <div class="toolbar-right">
+          <button id="zoom-btn" class="tool-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            Phóng To
+          </button>
+          <button id="light-btn" class="tool-btn light-switch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="light-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> 
+            Tắt Đèn
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="episodes" class="episodes-grid"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
