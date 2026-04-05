@@ -1,4 +1,5 @@
 const container = document.getElementById('episodes');
+const groupSelect = document.getElementById('episode-group-select');
 const video = document.getElementById('video');
 const overlay = document.getElementById('next-ep-overlay');
 const countdownSpan = document.getElementById('countdown');
@@ -16,11 +17,44 @@ let hls;
 let activeBtn = null;
 let currentEp = 1;
 
+const TOTAL_EPISODES = 1072;
+const GROUP_SIZE = 100;
+
+if (groupSelect) {
+  for (let i = 0; i < Math.ceil(TOTAL_EPISODES / GROUP_SIZE); i++) {
+    const start = i * GROUP_SIZE + 1;
+    const end = Math.min((i + 1) * GROUP_SIZE, TOTAL_EPISODES);
+    const option = document.createElement('option');
+    option.value = i;
+    option.innerText = `Tập ${start} - ${end}`;
+    groupSelect.appendChild(option);
+  }
+  
+  groupSelect.addEventListener('change', (e) => {
+    showGroup(parseInt(e.target.value));
+  });
+}
+
+function showGroup(groupIndex) {
+  const buttons = document.querySelectorAll('.episode-btn');
+  buttons.forEach(btn => {
+    if (parseInt(btn.dataset.group) === groupIndex) {
+      btn.style.display = 'block';
+    } else {
+      btn.style.display = 'none';
+    }
+  });
+  if (groupSelect) {
+    groupSelect.value = groupIndex;
+  }
+}
+
 const fragment = document.createDocumentFragment();
-for (let i = 1; i <= 1072; i++) {
+for (let i = 1; i <= TOTAL_EPISODES; i++) {
   const btn = document.createElement('button');
   btn.innerText = 'Tập ' + i;
   btn.className = 'episode-btn';
+  btn.dataset.group = Math.floor((i - 1) / GROUP_SIZE);
   btn.onclick = () => {
     loadVideo(i, btn);
   };
@@ -32,6 +66,9 @@ for (let i = 1; i <= 1072; i++) {
   }
 }
 container.appendChild(fragment);
+
+// Init first group
+showGroup(0);
 
 async function loadVideo(ep, btn) {
   try {
@@ -129,7 +166,12 @@ playNextBtn.addEventListener('click', playNextEpisode);
 
 function updateToolbar() {
   if (prevBtnEl) prevBtnEl.disabled = currentEp <= 1;
-  if (nextBtnEl) nextBtnEl.disabled = currentEp >= 1072;
+  if (nextBtnEl) nextBtnEl.disabled = currentEp >= TOTAL_EPISODES;
+  
+  const targetGroup = Math.floor((currentEp - 1) / GROUP_SIZE);
+  if (groupSelect && parseInt(groupSelect.value) !== targetGroup) {
+    showGroup(targetGroup);
+  }
 }
 
 if (prevBtnEl) {
