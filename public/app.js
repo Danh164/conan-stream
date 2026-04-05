@@ -17,6 +17,8 @@ let currentCountdown = 5;
 let hls;
 let activeBtn = null;
 let currentEp = 1;
+let currentSkipTo = 110; // Default skip to door scene at 1m50s
+const MAL_ID = 235; // MAL ID for Detective Conan
 
 const TOTAL_EPISODES = 1072;
 const GROUP_SIZE = 100;
@@ -84,6 +86,7 @@ async function loadVideo(ep, btn) {
     }
     currentEp = ep;
     updateToolbar();
+    fetchSkipTimes(ep);
 
     const res = await fetch(`/api/video?ep=${ep}`);
     const data = await res.json();
@@ -219,8 +222,8 @@ if (zoomBtnEl) {
 
 if (skipIntroBtn) {
   video.addEventListener('timeupdate', () => {
-    // Show 'Skip Intro' button only in the first 3 minutes of the video (after 5s)
-    if (video.currentTime > 5 && video.currentTime < 180) {
+    // Show 'Skip Intro' only if current time is before the target skip point
+    if (video.currentTime > 5 && video.currentTime < currentSkipTo) {
       skipIntroBtn.classList.remove('hidden');
     } else {
       skipIntroBtn.classList.add('hidden');
@@ -228,7 +231,29 @@ if (skipIntroBtn) {
   });
 
   skipIntroBtn.addEventListener('click', () => {
-    video.currentTime += 90; // Skip 90 seconds forward (standard intro length)
+    video.currentTime = currentSkipTo; 
     skipIntroBtn.classList.add('hidden');
   });
 }
+
+/**
+ * Fetch intro skip times from AniSkip (community-driven database)
+ */
+async function fetchSkipTimes(ep) {
+  currentSkipTo = 110; // Reset to default fallback
+  try {
+    const res = await fetch(`https://api.aniskip.com/v2/skip-times/${MAL_ID}/${ep}?types=op&episodeLength=0`);
+    if (!res.ok) return;
+    
+    const data = await res.json();
+    if (data.found && data.results && data.results[0] && data.results[0].interval) {
+      currentSkipTo = Math.floor(data.results[0].interval.endTime);
+      console.log(`[AniSkip] Found intro for episode ${ep}. Skipping to: ${currentSkipTo}s`);
+    } else {
+      console.log(`[AniSkip] No data for episode ${ep}. Using fallback: 110s`);
+    }
+  } catch (err) {
+    console.error("[AniSkip] API error:", err);
+  }
+}
+
