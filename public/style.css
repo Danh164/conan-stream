@@ -206,6 +206,42 @@ button.episode-btn.active {
   cursor: not-allowed;
 }
 
+/* Seek Group Controls */
+.seek-group {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid #334155;
+  overflow: hidden;
+}
+
+.seek-btn {
+  border: none !important;
+  background: transparent !important;
+  padding: 0.5rem 0.7rem !important;
+  gap: 4px !important;
+}
+
+.seek-btn:first-child {
+  border-right: 1px solid #334155 !important;
+  border-radius: 0 !important;
+}
+
+.seek-btn:hover {
+  background: var(--primary-color) !important;
+}
+
+.seek-btn span {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.seek-btn:hover span {
+  color: white;
+}
+
+
 /* Lights Off Mode */
 body {
   transition: background-color 0.3s ease;
