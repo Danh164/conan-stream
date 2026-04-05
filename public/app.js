@@ -10,6 +10,8 @@ const nextBtnEl = document.getElementById('next-btn');
 const lightBtnEl = document.getElementById('light-btn');
 const zoomBtnEl = document.getElementById('zoom-btn');
 const skipIntroBtn = document.getElementById('skip-intro-btn');
+const rewindBtnEl = document.getElementById('rewind-btn');
+const forwardBtnEl = document.getElementById('forward-btn');
 
 let countdownInterval = null;
 let currentCountdown = 5;
@@ -256,4 +258,40 @@ async function fetchSkipTimes(ep) {
     console.error("[AniSkip] API error:", err);
   }
 }
+
+// Rewind / Forward 5s logic
+if (rewindBtnEl) {
+  rewindBtnEl.addEventListener('click', () => {
+    video.currentTime = Math.max(0, video.currentTime - 5);
+  });
+}
+
+if (forwardBtnEl) {
+  forwardBtnEl.addEventListener('click', () => {
+    video.currentTime = Math.min(video.duration || 0, video.currentTime + 5);
+  });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Only skip if not typing in an input
+  if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT') return;
+
+  switch (e.key) {
+    case 'ArrowLeft':
+      video.currentTime = Math.max(0, video.currentTime - 5);
+      e.preventDefault();
+      break;
+    case 'ArrowRight':
+      video.currentTime = Math.min(video.duration || 0, video.currentTime + 5);
+      e.preventDefault();
+      break;
+    case ' ':
+      if (video.paused) video.play();
+      else video.pause();
+      e.preventDefault();
+      break;
+  }
+});
+
 
