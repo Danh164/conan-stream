@@ -9,6 +9,7 @@ const prevBtnEl = document.getElementById('prev-btn');
 const nextBtnEl = document.getElementById('next-btn');
 const lightBtnEl = document.getElementById('light-btn');
 const zoomBtnEl = document.getElementById('zoom-btn');
+const skipIntroBtn = document.getElementById('skip-intro-btn');
 
 let countdownInterval = null;
 let currentCountdown = 5;
@@ -216,3 +217,18 @@ if (zoomBtnEl) {
   });
 }
 
+if (skipIntroBtn) {
+  video.addEventListener('timeupdate', () => {
+    // Show 'Skip Intro' button only in the first 3 minutes of the video (after 5s)
+    if (video.currentTime > 5 && video.currentTime < 180) {
+      skipIntroBtn.classList.remove('hidden');
+    } else {
+      skipIntroBtn.classList.add('hidden');
+    }
+  });
+
+  skipIntroBtn.addEventListener('click', () => {
+    video.currentTime += 90; // Skip 90 seconds forward (standard intro length)
+    skipIntroBtn.classList.add('hidden');
+  });
+}
